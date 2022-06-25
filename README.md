@@ -113,41 +113,41 @@ This project was generated with [Django](https://github.com/django/django) versi
 _Below is an example of how you can instruct your audience on installing and setting up the app. This template doesn't rely on any external dependencies or services._
  
 1. Clone the repo by running
-    ```sh
-    git clone https://github.com/OneEyeX/Share-Your-Best-Pics.git
-    ```
+   ```sh
+   git clone https://github.com/OneEyeX/Share-Your-Best-Pics.git
+   ```
 2. setting up and activating the Virtual Environment
 
 Run  
-    ```sh
-    python -m venv venv
-    ```
+  ```sh
+  python -m venv venv
+  ```
 
 then  
-    ```sh
-    source venv/Scripts/activate
-    ```
+  ```sh
+  source venv/Scripts/activate
+  ```
 3. Installing Django
  
-    ```sh
-    pip install django==4.0.5
-    ```
+  ```sh
+  pip install django==4.0.5
+  ```
 
 4. Activating the server 
 
-    ```sh
-    cd Share-Your-Best-Pics
-    ```
+  ```sh
+  cd Share-Your-Best-Pics
+  ```
 
 then  
-    ```sh
-    python manage.py migrate
-    ```
+  ```sh
+  python manage.py migrate
+  ```
 
 then  
-    ```sh
-    python manage.py runserver
-    ```
+  ```sh
+  python manage.py runserver
+  ```
 
 for a dev server. Navigate to `http://localhost:8000/`. The application will automatically reload if you change any of the source files.
 
