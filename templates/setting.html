@@ -170,24 +170,23 @@ Settings
                 </div>
             </div>
 
-
         </div>
-        <script>
-            var loadFile2 = function (event) {
-                var image2 = document.getElementById("profile2");
-                image2.src = URL.createObjectURL(event.target.files[0]);
-            };
-        </script>
-        <style>
-            .footer4 {
-                position: absolute;
-                bottom: -20% !important;
-
-                width: 50%;
-            }
-        </style>
-
-        {% include 'footer.html' %}
-
     </div>
-    {% endblock content %}
+    <script>
+        var loadFile2 = function (event) {
+            var image2 = document.getElementById("profile2");
+            image2.src = URL.createObjectURL(event.target.files[0]);
+        };
+    </script>
+    <style>
+        .footer4 {
+            position: absolute;
+            bottom: -15% !important;
+            margin: 0 35%;
+        }
+    </style>
+
+
+</div> <br><br><br><br><br>
+{% include 'footer.html' %}
+{% endblock content %}
