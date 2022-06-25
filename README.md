@@ -113,6 +113,7 @@ This project was generated with [Django](https://github.com/django/django) versi
 _Below is an example of how you can instruct your audience on installing and setting up the app. This template doesn't rely on any external dependencies or services._
  
 1. Clone the repo by running
+
    ```sh
    git clone https://github.com/OneEyeX/Share-Your-Best-Pics.git
    ```
