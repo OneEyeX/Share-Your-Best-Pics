@@ -1,0 +1,570 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Profile
+{% endblock title %}
+{% block content %}
+
+<style>
+	.kaber:hover {
+		transform: scale(1.5);
+	}
+</style>
+
+<div class="container">
+	<div class="row">
+		<div class="col-lg-3 col-md-4">
+			<div class="text-center card-box">
+				<div class="member-card">
+					<div class="thumb-xl member-thumb m-b-10 center-block">
+						<img src="{{user_profile.profileimg.url}}" class="img-circle img-thumbnail kaber"
+							alt="profile-image">
+					</div>
+					<div class="">
+						<hr>
+						<br>
+						<h4 class="m-b-5">@{{user_profile}}</h4>
+						<br>
+						<!-- <p class="text-muted">@{{user_profile}}</p> -->
+					</div>
+
+					{% if user_object.username == user.username %}
+					<a href="/settings" class="btn btn-success btn-sm w-sm waves-effect m-t-10 waves-light"
+						data-ripple="">Account Settings</a>
+					{% else %}
+					<form action="/follow" method="POST">
+						{% csrf_token %}
+						<input type="hidden" value="{{user.username}}" name="follower" />
+						<input type="hidden" value="{{user_object.username}}" name="user" />
+						<a data-ripple="">
+							<button class="btn btn-danger btn-sm w-sm waves-effect m-t-10 waves-light" type="submit">
+								{{button_text}}</button>
+						</a>
+					</form>
+					{% endif %}
+
+
+				</div>
+			</div> <!-- end card-box -->
+
+		</div> <!-- end col -->
+		<div class="col-md-8 col-lg-9">
+			<ul class="nav nav-tabs" id="myTab" role="tablist">
+				<li class="nav-item">
+					<a class="nav-link active" id="home-tab" data-toggle="tab" href="#galleries" role="tab"
+						aria-controls="home" aria-selected="true">
+						<b> Gallery</b>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id="profile-tab" data-toggle="tab" href="#aboutuser" role="tab"
+						aria-controls="profile" aria-selected="false"><b>About</b></a>
+				</li>
+
+				<li class="nav-item">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id=" " href="#" role="tab" aria-controls="profile" aria-selected="false">
+						<b>
+							{% if user_post_length == 0 %}
+							No Post
+							{% elif user_post_length == 1 %}
+							{{user_post_length}} Post
+							{% else %}
+							{{user_post_length}} Posts
+							{% endif %}
+						</b>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id=" " href="#" role="tab" aria-controls="profile" aria-selected="false">
+						<b>
+							{% if user_followers == 0 or user_followers == 1 %}
+							<b>{{user_followers}} follower</b>
+							{% else %}
+							<b>{{user_followers}} followers</b>
+							{% endif %}
+						</b>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" id=" " href="#" role="tab" aria-controls="profile" aria-selected="false">
+						<b>
+							{{user_following}} following
+						</b>
+					</a>
+				</li>
+
+			</ul>
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="galleries" role="tabpanel" aria-labelledby="home-tab">
+					<div class="row">
+						{% if user_posts %}
+						{% for post in user_posts %}
+						{% if post.image %}
+
+						<div class="col-sm-4">
+							<div class="gal-detail thumb" style="border: 1px solid #8b8b8b; ">
+								<a class="strip" href="{{post.image.url}}" title="" data-strip-group="mygroup"
+									data-strip-group-options="loop: false">
+									<img src="{{post.image.url}}" style="height: 250px; width: 300px;" alt=""></a>
+
+								<h4 class="text-center">
+									{% if post.caption %}
+									{{post.caption}}
+									{% else %}
+									<br>
+									{% endif %}
+								</h4>
+								<div class="ga-border"></div>
+								<p class="text-muted text-center"><small>{{post.created_at|timesince}}</small></p>
+							</div>
+						</div>
+						{% endif %}
+						{% endfor %}
+						{% else %}
+						<div>
+							<h1 class="display-2 text-center">No post</h1>
+						</div>
+
+						{% endif %}
+
+
+
+					</div>
+
+				</div>
+				<div class="tab-pane fade" id="aboutuser" role="tabpanel" aria-labelledby="profile-tab">
+
+					<div class="m-t-30" style="padding: .5rem ;">
+						<br><br><br>
+						<h3 class="display-5">Bio :</h3>
+
+						<div class=" p-t-10">
+							<br>
+							<p class="text-muted font-13 m-b-0">
+								<strong>
+									{{user_profile.bio}}
+								</strong>
+							</p>
+						</div>
+						<br>
+						<hr>
+						<br>
+						<div class="">
+							<h3 class="display-5  m-b-5">Location :</h3>
+							<p class="text-muted font-13">
+								<strong>
+									{{user_profile.location}}
+								</strong>
+							</p>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+
+
+		</div>
+	</div>
+	<!-- end row -->
+	<br>
+	<br>
+
+	<style>
+		.footer4 {
+			position: absolute;
+			bottom: 0;
+			width: 50%;
+		}
+	</style>
+	{% include 'footer.html' %}
+
+
+</div>
+
+<style type="text/css">
+	/* ===========
+   Profile
+ =============*/
+	.card-box {
+		padding: 20px;
+		box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.06), 0 2px 0 0 rgba(0, 0, 0, 0.02);
+		-webkit-border-radius: 5px;
+		border-radius: 5px;
+		-moz-border-radius: 5px;
+		background-clip: padding-box;
+		margin-bottom: 20px;
+		background-color: #ffffff;
+	}
+
+	.header-title {
+		text-transform: uppercase;
+		font-size: 15px;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		line-height: 16px;
+		margin-bottom: 8px;
+	}
+
+	.social-links li a {
+		-webkit-border-radius: 50%;
+		background: #EFF0F4;
+		border-radius: 50%;
+		color: #7A7676;
+		display: inline-block;
+		height: 30px;
+		line-height: 30px;
+		text-align: center;
+		width: 30px;
+	}
+
+	/* ===========
+   Gallery
+ =============*/
+	.portfolioFilter a {
+		-moz-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
+		-moz-transition: all 0.3s ease-out;
+		-ms-transition: all 0.3s ease-out;
+		-o-transition: all 0.3s ease-out;
+		-webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
+		-webkit-transition: all 0.3s ease-out;
+		box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
+		color: #333333;
+		padding: 5px 10px;
+		display: inline-block;
+		transition: all 0.3s ease-out;
+	}
+
+	.portfolioFilter a:hover {
+		background-color: #228bdf;
+		color: #ffffff;
+	}
+
+	.portfolioFilter a.current {
+		background-color: #228bdf;
+		color: #ffffff;
+	}
+
+	.thumb {
+		background-color: #ffffff;
+		border-radius: 3px;
+		box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+		margin-top: 30px;
+		padding-bottom: 10px;
+		padding-left: 10px;
+		padding-right: 10px;
+		padding-top: 10px;
+		width: 100%;
+	}
+
+	.thumb-img {
+		border-radius: 2px;
+		overflow: hidden;
+		width: 100%;
+	}
+
+	.gal-detail h4 {
+		margin: 16px auto 10px auto;
+		width: 80%;
+		white-space: nowrap;
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.gal-detail .ga-border {
+		height: 3px;
+		width: 40px;
+		background-color: #228bdf;
+		margin: 10px auto;
+	}
+
+
+
+
+	.tabs-vertical-env .tab-content {
+		background: #ffffff;
+		display: table-cell;
+		margin-bottom: 30px;
+		padding: 30px;
+		vertical-align: top;
+	}
+
+	.tabs-vertical-env .nav.tabs-vertical {
+		display: table-cell;
+		min-width: 120px;
+		vertical-align: top;
+		width: 150px;
+	}
+
+	.tabs-vertical-env .nav.tabs-vertical li.active>a {
+		background-color: #ffffff;
+		border: 0;
+	}
+
+	.tabs-vertical-env .nav.tabs-vertical li>a {
+		color: #333333;
+		text-align: center;
+		font-family: 'Roboto', sans-serif;
+		font-weight: 500;
+		white-space: nowrap;
+	}
+
+	.nav.nav-tabs>li.active>a {
+		background-color: #ffffff;
+		border: 0;
+	}
+
+	.nav.nav-tabs>li>a {
+		background-color: transparent;
+		border-radius: 0;
+		border: none;
+		color: #333333 !important;
+		cursor: pointer;
+		line-height: 50px;
+		font-weight: 500;
+		padding-left: 20px;
+		padding-right: 20px;
+		font-family: 'Roboto', sans-serif;
+	}
+
+	.nav.nav-tabs>li>a:hover {
+		color: #228bdf !important;
+	}
+
+	.nav.tabs-vertical>li>a {
+		background-color: transparent;
+		border-radius: 0;
+		border: none;
+		color: #333333 !important;
+		cursor: pointer;
+		line-height: 50px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.nav.tabs-vertical>li>a:hover {
+		color: #228bdf !important;
+	}
+
+	.tab-content {
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+		color: #777777;
+	}
+
+	.nav.nav-tabs>li:last-of-type a {
+		margin-right: 0px;
+	}
+
+	.nav.nav-tabs {
+		border-bottom: 0;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+	}
+
+	.navtab-custom li {
+		margin-bottom: -2px;
+	}
+
+	.navtab-custom li a {
+		border-top: 2px solid transparent !important;
+	}
+
+	.navtab-custom li.active a {
+		border-top: 2px solid #228bdf !important;
+	}
+
+	.nav-tab-left.navtab-custom li a {
+		border: none !important;
+		border-left: 2px solid transparent !important;
+	}
+
+	.nav-tab-left.navtab-custom li.active a {
+		border-left: 2px solid #228bdf !important;
+	}
+
+	.nav-tab-right.navtab-custom li a {
+		border: none !important;
+		border-right: 2px solid transparent !important;
+	}
+
+	.nav-tab-right.navtab-custom li.active a {
+		border-right: 2px solid #228bdf !important;
+	}
+
+	.nav-tabs.nav-justified>.active>a,
+	.nav-tabs.nav-justified>.active>a:hover,
+	.nav-tabs.nav-justified>.active>a:focus,
+	.tabs-vertical-env .nav.tabs-vertical li.active>a {
+		border: none;
+	}
+
+	.nav-tabs>li.active>a,
+	.nav-tabs>li.active>a:focus,
+	.nav-tabs>li.active>a:hover,
+	.tabs-vertical>li.active>a,
+	.tabs-vertical>li.active>a:focus,
+	.tabs-vertical>li.active>a:hover {
+		color: #228bdf !important;
+	}
+
+	.nav.nav-tabs+.tab-content {
+		background: #ffffff;
+		margin-bottom: 20px;
+		padding: 20px;
+	}
+
+	.progress.progress-sm .progress-bar {
+		font-size: 8px;
+		line-height: 5px;
+	}
+</style>
+
+<script type="text/javascript">
+
+</script>
+
+{% endblock content %}
+
+
+<!--<div class="se-pre-con"></div>-->
+<div class="theme-layout">
+
+</div>
+
+<section>
+	<div class="feature-photo">
+		<figure><img src="{% static 'images/resources/timeline-1.jpg' %}" alt=""></figure>
+		<form action="/follow" method="POST">
+			{% csrf_token %}
+			<div class="add-btn">
+				<span style="color: white; font-size: 27px; margin-right: 520px;"><b><u><a
+								href="/">Home</a></u></b></span>
+
+				{% if user_post_length == 0 %}
+				<span style="color: white; font-size: 27px;"><b>No Post</b></span>
+				{% elif user_post_length == 1 %}
+				<span style="color: white; font-size: 27px;"><b>{{user_post_length}} Post</b></span>
+				{% else %}
+				<span style="color: white; font-size: 27px;"><b>{{user_post_length}} Posts</b></span>
+				{% endif %}
+
+				{% if user_followers == 0 or user_followers == 1 %}
+				<span style="color: white; font-size: 27px;"><b>{{user_followers}} follower</b></span>
+				{% else %}
+				<span style="color: white; font-size: 27px;"><b>{{user_followers}} followers</b></span>
+				{% endif %}
+
+
+				<span style="color: white; font-size: 27px;"><b>{{user_following}} following</b></span>
+
+				<input type="hidden" value="{{user.username}}" name="follower" />
+				<input type="hidden" value="{{user_object.username}}" name="user" />
+				<!-- 
+				{% if user_object.username == user.username %}
+				<a href="/settings" data-ripple="">Account Settings</a>
+				{% else %}
+				<a data-ripple="">
+					<button class="btn btn-danger btn-sm w-sm waves-effect m-t-10 waves-light" type="submit">
+						{{button_text}}</button>
+				</a>
+				{% endif %} -->
+
+			</div>
+		</form>
+
+		<!-- <form class="edit-phto">
+					<i class="fa fa-camera-retro"></i>
+					<label class="fileContainer">
+						Upload Cover Photo
+					<input type="file"/>
+					</label>
+				</form> -->
+		<div class="container-fluid">
+			<div class="row merged">
+				<div class="col-lg-2 col-sm-3">
+					<div class="user-avatar">
+						<figure>
+							<img src="{{user_profile.profileimg.url}}" style="height: 250px; width: 100%;" alt="">
+							<!-- <form class="edit-phto">
+										<i class="fa fa-camera-retro"></i>
+										<label class="fileContainer">
+											<a href="#account-settings">Upload Profile Photo</a>
+										</label>
+									</form> -->
+						</figure>
+					</div>
+				</div>
+				<div class="col-lg-10 col-sm-9">
+					<div class="timeline-info">
+						<ul>
+							<li class="admin-name">
+								<h5 style="color: black;white-space: nowrap; width: 110px; font-size: 27px;">
+									<b>@{{user_profile.user.username}}</b>
+									<!--<i class="fa fa-check-circle" style="color: #48dbfb;" aria-hidden="true"></i>-->
+								</h5>
+								<!--<span>Group Admin</span>-->
+							</li>
+
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section><!-- top area -->
+<section>
+	<div class="bio">
+		{{user_profile.bio}}
+	</div>
+</section>
+
+<section>
+	<div class="gap gray-bg">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="row" id="page-contents">
+						<div class="col-lg-3">
+							<aside class="sidebar static">
+
+							</aside>
+						</div><!-- sidebar -->
+						<div class="col-lg-6">
+							<div class="central-meta">
+								<ul class="photos">
+
+									{% for post in user_posts %}
+									<li>
+
+										{% if post.image %}
+
+
+
+										<a class="strip" href="{{post.image.url}}" title="" data-strip-group="mygroup"
+											data-strip-group-options="loop: false">
+											<img src="{{post.image.url}}" style="height: 250px; width: 300px;"
+												alt=""></a>
+										{% endif %}
+									</li>
+									{% endfor %}
+
+
+
+								</ul>
+								<!--<div class="lodmore"><button class="btn-view btn-load-more"></button></div>-->
+							</div><!-- photos -->
+						</div><!-- centerl meta -->
+						<div class="col-lg-3">
+							<aside class="sidebar static">
+
+							</aside>
+						</div><!-- sidebar -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

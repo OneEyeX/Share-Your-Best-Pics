@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Home
+{% endblock title %}
+{% block content %}
+
+
+<div class="container m-auto">
+
+    <!--<h1 class="lg:text-2xl text-lg font-extrabold leading-none text-gray-900 tracking-tight mb-5"> Feed </h1>--->
+
+    <div class="lg:flex justify-center lg:space-x-10 lg:space-y-0 space-y-5">
+
+        <!-- left sidebar-->
+        <div class="space-y-5 flex-shrink-0 lg:w-7/12">
+
+            <!-- post 1-->
+
+            {% for post in posts reversed %}
+            <div class="bg-white shadow rounded-md  -mx-2 lg:mx-0">
+
+                <!-- post header-->
+                <div class="flex justify-between items-center px-4 py-3">
+                    <div class="flex flex-1 items-center space-x-4">
+                        <span class="block font-semibold ">
+                            <a href="profile/{{post.user}}">
+                                @{{post.user}}
+                            </a>
+                        </span>
+                    </div>
+                    <div>
+                        {{post.created_at|timesince}} ago
+                    </div>
+
+                    {% if request.user == post.user%}
+                    <div style="margin-right:25% ;  ">
+                        <a href="#"> <i
+                                class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 "></i>
+                        </a>
+                        <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100  "
+                            uk-drop="mode: hover;pos: top-right">
+
+                            <ul class="space-y-1">
+
+                                <li>
+                                    <a href="#"
+                                        class="flex items-center px-3 py-2 text-red-500 hover:bg-red-100 hover:text-red-500 rounded-md ">
+                                        <i class="uil-trash-alt mr-1"></i> Delete Post (it's not developed yet)
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <div uk-lightbox>
+                    <p style="padding: .5rem 2rem;">
+                        {% if post.caption %}
+                        <strong>
+                            Caption :
+                        </strong> {{post.caption}}
+                        {% else %}
+                        <br>
+                        {% endif %}
+
+
+                    </p>
+
+                    {% if post.image  %}
+                    <a href="{{post.image.url}}">
+                        <img src="{{post.image.url}}" alt="">
+                    </a>
+                    {% endif %}
+                </div>
+
+
+                <div class="py-3 px-4 space-y-3">
+
+                    <div class="flex space-x-4 lg:font-bold">
+                        <a href="/like-post?post_id={{post.id}}" class="flex items-center space-x-2">
+                            <div class="p-2 rounded-full text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    width="25" height="25" class="">
+                                    <path
+                                        d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                                </svg>
+                            </div>
+                        </a>
+
+                        {% if post.image  %}
+                        <a href="{{post.image.url}}" class="flex items-center space-x-2 flex-1 justify-end" download>
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                aria-hidden="true" role="img" width="25" height="25" preserveAspectRatio="xMidYMid meet"
+                                viewBox="0 0 16 16">
+                                <g fill="currentColor">
+                                    <path
+                                        d="M8.5 1.5A1.5 1.5 0 0 1 10 0h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h6c-.314.418-.5.937-.5 1.5v6h-2a.5.5 0 0 0-.354.854l2.5 2.5a.5.5 0 0 0 .708 0l2.5-2.5A.5.5 0 0 0 10.5 7.5h-2v-6z" />
+                                </g>
+                            </svg>
+                        </a>
+
+                        {% endif %}
+
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="">
+                            {% if post.no_of_likes == 0 %}
+                            <p>No likes</p>
+                            {% elif post.no_of_likes == 1 %}
+                            <p>Liked by <strong> {{post.no_of_likes}} person</strong></p>
+                            {% else %}
+                            <p>Liked by <strong>{{post.no_of_likes}} people</strong></p>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+
+
+
+
+        </div>
+
+        <!-- right sidebar-->
+        <div class="lg:w-5/12">
+
+            <div class="bg-white  shadow-md rounded-md overflow-hidden">
+
+                <div class="bg-gray-50  border-b border-gray-100 flex items-baseline justify-between py-4 px-6 ">
+                    <h2 class="font-semibold text-lg">Users You Can Follow</h2>
+                    <!-- <a href="#"> Refresh</a> -->
+                </div>
+
+                <div class="divide-gray-300 divide-gray-50 divide-opacity-50 divide-y px-4 ">
+
+                    {% for suggestion in suggestions_username_profile_list %}
+                    <div class="flex items-center justify-between py-3">
+                        <div class="flex flex-1 items-center space-x-4">
+                            <a href="profile/{{suggestion.user}}">
+                                <img src="{{suggestion.profileimg.url}}" class="bg-gray-200 rounded-full w-10 h-10">
+                            </a>
+                            <div class="flex flex-col">
+                                <span class="block capitalize font-semibold"> {{suggestion.user}} </span>
+                                <span class="block capitalize text-sm"> {{suggestion.bio}} </span>
+                            </div>
+                        </div>
+
+                        <a href="profile/{{suggestion.user}}"
+                            class=" rounded-full  btn btn-secondary  hover:text-white   ">
+                            View User Profile</a>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+    {% if posts  %}
+    {% include 'footer.html' %}
+    {% else %}
+    <br><br><br><br><br><br>
+    <br><br><br><br><br><br><br>
+
+
+    {% include 'footer.html' %}
+    {% endif %}
+
+
+
+</div>
+
+
+
+{% endblock content %}

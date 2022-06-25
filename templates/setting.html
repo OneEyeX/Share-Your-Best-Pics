@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Settings
+{% endblock title %}
+{% block content %}
+
+<div class="container ">
+    <h1 class="display-6"> <small><a href="{% url 'index' %}"> Home</a> / Account Setting for
+            <b>{{user.username}}</b> </small></h1> <br>
+    <hr><br>
+    <style>
+        .nav-link {
+            color: rgb(76, 75, 75);
+        }
+
+        .nav-link:hover {
+            text-decoration: none;
+            color: lightgrey;
+        }
+    </style>
+    <div class="row flex-lg-nowrap">
+        <div class="col-12 col-lg-auto mb-3" style="width: 200px;">
+            <div class="card p-3">
+                <div class="e-navlist e-navlist--active-bg">
+                    <ul class="nav">
+                        <li class="nav-item"><a class="nav-link px-2 active" href="{% url 'index' %}"><i
+                                    class="fa fa-home mr-1"></i><span> Home</span></a></li>
+                        <li class="nav-item"><a class="nav-link px-2" href="{% url 'profile' user %}"><i
+                                    class="fa fa-fw fa-th mr-1"></i><span> {{user}}</span></a></li>
+                        <li class="nav-item"><a class="nav-link px-2" href="{% url 'settings' %}"><i
+                                    class="fa fa-fw fa-cog mr-1"></i><span> Settings</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="row">
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="e-profile">
+                                <form action="" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-12 col-sm-auto mb-3">
+                                            <div class="mx-auto" style="width: 140px;">
+                                                <div class="d-flex justify-content-center align-items-center rounded">
+                                                    <!-- profile pic -->
+                                                    <div class="profile-pic">
+                                                        <label class="-label" for="profilePic">
+                                                            <!-- <span class="glyphicon glyphicon-camera"></span> -->
+                                                            <span>Change Image</span>
+                                                        </label>
+                                                        <img id="profile2" width="165px" height="165px"
+                                                            src="{{user_profile.profileimg.url}}" />
+                                                        <input id="profilePic" type="file" name="image" value=""
+                                                            class="shadow-none bg-gray-100" onchange="loadFile2(event)">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
+                                            <div class="text-center text-sm-left mb-2 mb-sm-0">
+                                                <br>
+                                                <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap">{{user_profile}}</h4>
+
+                                                <div class="text-muted"><small>Last seen
+                                                        {{ user_profile.user.last_login|timesince}}
+                                                        ago</small>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <button type="button" class="btn btn-dark"
+                                                        onclick="document.getElementById('profilePic').click();">
+                                                        <i class="fa fa-fw fa-camera"></i>
+                                                        <span>Change Photo</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="text-center text-sm-right">
+                                                {% if user_profile.user.is_superuser %}
+                                                <span class="badge badge-secondary">
+                                                    administrator
+                                                </span>
+                                                {% else %}
+                                                <br>
+                                                {% endif %}
+                                                <div class="text-muted"><small>
+                                                        Joined
+                                                        {{ user_profile.user.date_joined|date:"j b Y"}} </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <ul class="nav nav-tabs">
+                                        <li class="nav-item"><a href="" class="active nav-link">Settings</a></li>
+                                    </ul> -->
+                                    <div class="tab-content pt-3">
+                                        <div class="tab-pane active">
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label for="">Location :</label>
+                                                                <input type="text" name="location"
+                                                                    style="border: 1px solid rgb(150, 150, 150) ;"
+                                                                    value="{{user_profile.location}}"
+                                                                    class="form-control" placeholder="Location">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div class="row">
+
+                                                    </div> -->
+                                                    <div class="row">
+                                                        <div class="col mb-3">
+                                                            <div class="form-group">
+                                                                <label for="about">Bio :</label>
+                                                                <textarea id="about" name="bio" class="form-control"
+                                                                    style="border: 1px solid rgb(150, 150, 150) ;"
+                                                                    rows="5">{{user_profile.bio}}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <!-- <div class="bg-gray-10 p-6 pt-0 flex justify-end space-x-3">
+                                                    <button class="p-2 px-4 rounded bg-gray-50 text-red-500"> <a
+                                                            href="/">Cancel</a> </button>
+                                                    <button type="submit" class="button bg-blue-700"> Save </button>
+                                                </div> -->
+                                                <div class="col d-flex justify-content-end ">
+                                                    <button class="btn btn-danger" type="reset"
+                                                        style="margin : 0 10px;">
+                                                        Cancel
+                                                    </button>
+                                                    <button class="btn btn-success" type="submit"
+                                                        style="margin : 0 10px;">
+                                                        Save Changes
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-3 mb-3">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="px-xl-3">
+                                <button class="btn btn-block btn-secondary" data-toggle="modal"
+                                    data-target="#exampleModalCenter2">
+                                    <i class="fa fa-sign-out"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+        <script>
+            var loadFile2 = function (event) {
+                var image2 = document.getElementById("profile2");
+                image2.src = URL.createObjectURL(event.target.files[0]);
+            };
+        </script>
+        <style>
+            .footer4 {
+                position: absolute;
+                bottom: -20% !important;
+
+                width: 50%;
+            }
+        </style>
+
+        {% include 'footer.html' %}
+
+    </div>
+    {% endblock content %}
